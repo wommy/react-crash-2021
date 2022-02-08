@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import AddTask from './_includes/AddTask'
 import Header from './_includes/Header'
+import AddTask from './_includes/AddTask'
 import Tasks from './_includes/Tasks'
+import Footer from './_includes/Footer'
 
 export const frontMatter = {
   layout: 'layout',
@@ -84,6 +85,7 @@ const App = () => {
       ) : (
         'No Tasks to Show'
       )}
+      <Footer />
     </div>
   )
 }
