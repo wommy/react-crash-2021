@@ -9,36 +9,65 @@ export const frontMatter = {
   title: 'Task Tracker',
 }
 
-function App() {
+const App = () => {
   const [showAddTask, setShowAddTask] = useState(false)
   const [tasks, setTasks] = useState([])
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      const res = await fetch('http://localhost:3000/tasks')
-      const data = await res.json()
-      console.log(data)
+    const getTasks = async () => {
+      const tasksFromServer = await fetchTasks()
+      setTasks(tasksFromServer)
     }
-    fetchTasks()
+    getTasks()
   }, [])
 
+  const DB_URL = `http://localhost:3000/tasks`
+  const headers = { 'Content-type': 'application/json' }
+
+  // fetch tasks
+  const fetchTasks = async () => {
+    const res = await fetch(DB_URL)
+    return await res.json()
+  }
+
+  // fetch task
+  const fetchTask = async id => {
+    const res = await fetch(`${DB_URL}/${id}`)
+    return await res.json()
+  }
+
   // add task
-  const addTask = task => {
-    const id = Math.floor(Math.random() * 10000) + 1
-    const newTask = { id, ...task }
-    setTasks([...tasks, newTask])
+  const addTask = async task => {
+    const res = await fetch(DB_URL, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(task),
+    })
+    const data = await res.json()
+    setTasks([...tasks, data])
   }
 
   // delete task
-  const deleteTask = id => {
+  const deleteTask = async id => {
+    await fetch(`${DB_URL}/${id}`, {
+      method: 'DELETE',
+    })
     setTasks(tasks.filter(task => task.id !== id))
   }
 
   // toggle reminder
-  const toggleReminder = id => {
+  const toggleReminder = async id => {
+    const taskToToggle = await fetchTask(id)
+    const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder }
+    const res = await fetch(`${DB_URL}/${id}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(updTask),
+    })
+    const data = await res.json()
     setTasks(
       tasks.map(task =>
-        task.id === id ? { ...task, reminder: !task.reminder } : task,
+        task.id === id ? { ...task, reminder: data.reminder } : task,
       ),
     )
   }
