@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import AddTask from '../_includes/AddTask'
-import Header from '../_includes/Header'
-import Tasks from '../_includes/Tasks'
+import AddTask from './_includes/AddTask'
+import Header from './_includes/Header'
+import Tasks from './_includes/Tasks'
 
 export const frontMatter = {
   layout: 'layout',
